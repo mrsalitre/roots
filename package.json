@@ -1,0 +1,11 @@
+{
+  "name": "roots",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.2",
+    "cookbookdev": "^0.0.22",
+    "hardhat": "^2.13.0"
+  },
+  "scripts": {
+    "compile": "hardhat compile"
+  }
+}
