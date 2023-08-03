@@ -3,7 +3,7 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 
@@ -19,37 +19,42 @@ import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
  * with ability for owner to pause NFT transfers.
  * @dev ERC1155 NFT, the basic standard multi-token, with the following features:
  *
- *  - Owner can pause or unpause NFT transfers.
+ *  - Owners can pause or unpause NFT transfers.
  *  - Adjustable metadata.
  *  - Create multiple NFT collections with the same contract.
  *
  */
 
-contract Roots is ERC1155, Ownable, Pausable, ERC1155Supply {
+contract Roots is ERC1155, AccessControl, Pausable, ERC1155Supply {
+    bytes32 public constant DEVELOPER_ROLE = keccak256("DEVELOPER_ROLE");
+    
     /**
      * @param _uri NFT metadata URI
      */
-    constructor(string memory _uri) payable ERC1155(_uri) {}
+    constructor(string memory _uri) ERC1155(_uri) {
+        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        _grantRole(DEVELOPER_ROLE, msg.sender);
+    }
 
     /**
      * @dev Updates the base URI that will be used to retrieve metadata.
      * @param newuri The base URI to be used.
      */
-    function setURI(string memory newuri) external onlyOwner {
+    function setURI(string memory newuri) external onlyRole(DEVELOPER_ROLE) {
         _setURI(newuri);
     }
 
     /**
      * @dev Pauses the contract, preventing any transfers. Only callable by the contract owner.
      */
-    function pause() external onlyOwner {
+    function pause() external onlyRole(DEVELOPER_ROLE) {
         _pause();
     }
 
     /**
      * @dev Unpauses the contract, allowing transfers to occur again. Only callable by the contract owner.
      */
-    function unpause() external onlyOwner {
+    function unpause() external onlyRole(DEVELOPER_ROLE) {
         _unpause();
     }
 
