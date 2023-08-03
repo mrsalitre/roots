@@ -19,8 +19,8 @@ import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
  * with ability for owner to pause NFT transfers.
  * @dev ERC1155 NFT, the basic standard multi-token, with the following features:
  *
- *  - Owners can pause or unpause NFT transfers.
- *  - Adjustable metadata.
+ *  - Developers can pause or unpause NFT transfers.
+ *  - Developers can adjust metadata.
  *  - Create multiple NFT collections with the same contract.
  *
  */
@@ -84,5 +84,15 @@ contract Roots is ERC1155, AccessControl, Pausable, ERC1155Supply {
     ) internal override(ERC1155, ERC1155Supply) whenNotPaused {
         super._beforeTokenTransfer(operator, from, to, ids, amounts, data);
     }
-}
 
+    // The following functions are overrides required by Solidity.
+
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        override(ERC1155, AccessControl)
+        returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
+    }
+}
