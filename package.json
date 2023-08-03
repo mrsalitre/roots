@@ -7,5 +7,8 @@
   },
   "scripts": {
     "compile": "hardhat compile"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.9.3"
   }
 }
