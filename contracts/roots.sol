@@ -70,7 +70,7 @@ contract Roots is ERC1155, AccessControl, Pausable, ERC1155Supply {
         uint256[] memory ids,
         uint256[] memory amounts,
         bytes memory data
-    ) external onlyOwner {
+    ) external payable {
         _mintBatch(to, ids, amounts, data);
     }
 
