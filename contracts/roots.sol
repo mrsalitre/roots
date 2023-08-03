@@ -54,22 +54,6 @@ contract Roots is ERC1155, Ownable, Pausable, ERC1155Supply {
     }
 
     /**
-     * @dev A method for the owner to mint new ERC1155 tokens.
-     * @param account The account for new tokens to be sent to.
-     * @param id The id of token type.
-     * @param amount The number of this token type to be minted.
-     * @param data additional data that will be used within the receiver's onERC1155Received method
-     */
-    function mint(
-        address account,
-        uint256 id,
-        uint256 amount,
-        bytes memory data
-    ) external onlyOwner {
-        _mint(account, id, amount, data);
-    }
-
-    /**
      * @dev A method for the owner to mint a batch of new ERC1155 tokens.
      * @param to The account for new tokens to be sent to.
      * @param ids The ids of the different token types.
