@@ -12,7 +12,7 @@ import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
  * @author Jean Ayala (jeanayala.eth).
  * @custom:coauthor Diegofigs
  * @notice NFT, ERC1155, Pausable
- * @custom:version 1.0.1
+ * @custom:version 1.0.0
  * @custom:address 18
  * @custom:default-precision 0
  * @custom:simple-description An NFT that supports creating multiple collections,
@@ -26,7 +26,11 @@ import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
  */
 
 contract Roots is ERC1155, AccessControl, Pausable, ERC1155Supply {
+    /// @dev Role identifier for developers.
     bytes32 public constant DEVELOPER_ROLE = keccak256("DEVELOPER_ROLE");
+
+    /// @dev Mapping from token ID to its URI.
+    mapping(uint256 => string) private _tokenURIs;
     
     /**
      * @param _uri NFT metadata URI
@@ -34,6 +38,28 @@ contract Roots is ERC1155, AccessControl, Pausable, ERC1155Supply {
     constructor(string memory _uri) ERC1155(_uri) {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(DEVELOPER_ROLE, msg.sender);
+    }
+
+    /**
+     * @dev Allows an address with the developer role to set the URIs for multiple tokens.
+     * @param ids An array of token IDs.
+     * @param uris An array of URIs.
+     */
+    function setTokenURIs(uint256[] memory ids, string[] memory uris) external onlyRole(DEVELOPER_ROLE) {
+        require(ids.length == uris.length, "IDs and URIs length must match");
+
+        for (uint256 i = 0; i < ids.length; i++) {
+            _tokenURIs[ids[i]] = uris[i];
+        }
+    }
+
+    /**
+     * @dev Returns the URI for a given token.
+     * @param id The token ID.
+     * @return The URI of the token.
+     */
+    function uri(uint256 id) public view override returns (string memory) {
+        return _tokenURIs[id];
     }
 
     /**
@@ -70,7 +96,7 @@ contract Roots is ERC1155, AccessControl, Pausable, ERC1155Supply {
         uint256[] memory ids,
         uint256[] memory amounts,
         bytes memory data
-    ) external payable {
+    ) external payable whenNotPaused {
         _mintBatch(to, ids, amounts, data);
     }
 
